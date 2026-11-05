@@ -39,12 +39,43 @@ theme_override_font_sizes/font_size = 32
 text = "VOLLEYBALL LEAGUE"
 horizontal_alignment = 1
 
+[node name="Difficulty" type="HBoxContainer" parent="."]
+offset_left = 85.0
+offset_top = 145.0
+offset_right = 315.0
+offset_bottom = 178.0
+theme_override_constants/separation = 12
+
+[node name="Label" type="Label" parent="Difficulty"]
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0.08, 0.2, 0.25, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 16
+text = "Difficulty"
+
+[node name="Selector" type="OptionButton" parent="Difficulty"]
+custom_minimum_size = Vector2(120, 32)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 16
+
+[node name="DifficultyHint" type="Label" parent="."]
+offset_left = 10.0
+offset_top = 180.0
+offset_right = 390.0
+offset_bottom = 196.0
+theme_override_colors/font_outline_color = Color(0.08, 0.2, 0.25, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 11
+text = "Current movement and attack balance."
+horizontal_alignment = 1
+
 [node name="Buttons" type="VBoxContainer" parent="."]
 layout_mode = 0
 offset_left = 140.0
-offset_top = 160.0
+offset_top = 205.0
 offset_right = 260.0
-offset_bottom = 270.0
+offset_bottom = 315.0
 theme_override_constants/separation = 8
 
 [node name="PlayButton" type="Button" parent="Buttons"]
@@ -65,20 +96,20 @@ text = "Quit"
 [node name="ControlsText" type="Label" parent="."]
 layout_mode = 0
 offset_left = 10.0
-offset_top = 290.0
+offset_top = 330.0
 offset_right = 390.0
-offset_bottom = 410.0
+offset_bottom = 425.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_outline_color = Color(0.08, 0.2, 0.25, 1)
 theme_override_constants/outline_size = 3
-theme_override_font_sizes/font_size = 12
-text = "WASD / Arrows: move
-Enter: serve
-K: receive (hold for a higher toss)
-Hold ←/→ while receiving: pass over the net
-Space: jump
-L: spike
-Esc: pause"
+theme_override_constants/line_spacing = -2
+theme_override_font_sizes/font_size = 11
+text = "2v2: you + AI against two AI players
+WASD / Arrows: move · Shift + direction: dive
+L: serve / spike · Space: jump
+K: pass / set on 1st and 2nd touches
+←/→ + K: return on the 3rd touch
+J: jump-block near net · Esc: pause"
 horizontal_alignment = 1
 
 [node name="Camera2D" type="Camera2D" parent="."]

@@ -8,13 +8,27 @@ const Ball = preload("res://scripts/ball.gd")
 @export var jump_speed: float = 300.0
 @export var gravity: float = 550.0
 @export var ball: Ball
+
 # Frame numbers start at zero. X is forward reach; Y is height above the feet.
 @export_range(0, 30) var spike_contact_frame: int = 1
 @export var spike_hand_offset: Vector2 = Vector2(12, 38)
+
+@export_range(0, 30) var block_start_frame: int = 5
+@export_range(0, 30) var block_end_frame: int = 8
+@export var block_hand_offset: Vector2 = Vector2(8, 42)
+
 @export_range(0, 30) var receive_contact_frame: int = 1
 @export var receive_hand_offset: Vector2 = Vector2(12, 18)
 @export_range(0.1, 3.0) var receive_charge_time: float = 1.0
 @export var pass_speed: float = 120.0
+
+@export var dive_speed: float = 120.0
+@export_range(0.1, 1.0) var dive_duration: float = 0.32
+@export_range(0.1, 1.0) var dive_recovery: float = 0.22
+@export_range(0, 30) var dive_start_frame: int = 3
+@export_range(0, 30) var dive_end_frame: int = 10
+@export var dive_hand_offset: Vector2 = Vector2(18, 7)
+
 @export var side: Ball.Side = Ball.Side.LEFT
 
 var controls_enabled: bool = true
@@ -23,10 +37,16 @@ var vertical_speed: float = 0.0
 var is_jumping: bool = false
 var has_spiked: bool = false
 var spike_hit: bool = false
+var has_blocked: bool = false
+var block_hit: bool = false
 var is_receiving: bool = false
 var receive_hit: bool = false
 var receive_hold_time: float = 0.0
 var jump_queued: bool = false
+var is_diving: bool = false
+var dive_hit: bool = false
+var dive_elapsed: float = 0.0
+var dive_direction: Vector2 = Vector2.ZERO
 
 
 func _ready() -> void:
@@ -35,18 +55,32 @@ func _ready() -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if not controls_enabled:
+	if not controls_enabled or is_diving:
 		return
-	if event.is_action_pressed("jump") and not is_jumping:
+	if event.is_action_pressed("dive") and not is_jumping:
+		var direction := Input.get_vector("move_left", "move_right", "move_up", "move_down")
+		if direction != Vector2.ZERO:
+			_start_dive(direction)
+	elif event.is_action_pressed("jump") and not is_jumping:
 		if is_receiving and not receive_hit:
 			jump_queued = true
 		else:
 			_start_jump()
-	elif event.is_action_pressed("spike") and is_jumping and not has_spiked:
+	elif event.is_action_pressed("spike") and is_jumping and not has_spiked and not has_blocked:
+		get_parent().spend_stamina(self, get_parent().spike_cost)
 		has_spiked = true
 		spike_hit = false
 		play("spike")
 		# Starting at frame zero may not emit frame_changed if the old frame was zero.
+		_on_frame_changed()
+	elif event.is_action_pressed("block") and not has_blocked and not has_spiked and _can_start_block():
+		if not is_jumping:
+			_start_jump()
+		get_parent().spend_stamina(self, get_parent().block_cost)
+		has_blocked = true
+		block_hit = false
+		flip_h = side == Ball.Side.RIGHT
+		play("block")
 		_on_frame_changed()
 	elif event.is_action_pressed("receive") and not is_jumping and not is_receiving:
 		is_receiving = true
@@ -56,6 +90,16 @@ func _unhandled_input(event: InputEvent) -> void:
 		_on_frame_changed()
 
 
+func _can_start_block() -> bool:
+	if not is_instance_valid(ball):
+		return false
+	var facing := -1.0 if side == Ball.Side.RIGHT else 1.0
+	var hand_position := global_position + Vector2(block_hand_offset.x * facing, 0)
+	return (global_position.x - ball.net_x) * facing <= 0.0 \
+		and absf(hand_position.x - ball.net_x) <= ball.block_net_distance \
+		and hand_position.y >= ball.net_span.x and hand_position.y <= ball.net_span.y
+
+
 func _on_frame_changed() -> void:
 	_check_contact()
 
@@ -63,21 +107,39 @@ func _on_frame_changed() -> void:
 func _check_contact() -> void:
 	if not controls_enabled or not is_instance_valid(ball):
 		return
+	if is_diving:
+		if dive_hit or animation != &"slide" or frame < dive_start_frame or frame > dive_end_frame:
+			return
+		var facing := -1.0 if flip_h else 1.0
+		var hand_position := global_position + Vector2(dive_hand_offset.x * facing, 0)
+		var pass_velocity: Vector2 = get_parent().pass_to_partner(self, 0.35)
+		dive_hit = ball.try_receive(hand_position, dive_hand_offset.y, side, 0.35, pass_velocity, self)
+		return
 	if animation == &"receive" and is_receiving and controls_enabled:
 		if receive_hit or frame < receive_contact_frame:
 			return
 		var facing := -1.0 if flip_h else 1.0
 		var hand_position := global_position + Vector2(receive_hand_offset.x * facing, 0)
 		var charge := clampf(receive_hold_time / receive_charge_time, 0.0, 1.0)
-		# Holding left or right sends the ball that way instead of straight up.
-		var pass_velocity := Vector2(Input.get_axis("move_left", "move_right") * pass_speed, 0)
+		var pass_velocity: Vector2 = get_parent().pass_to_partner(self, charge)
+		var next_touch: int = ball.team_touches + 1 if ball.contact_team == side else 1
+		# Early contacts pass/set to our partner; directional returns are third-touch only.
+		if next_touch == 3 and Input.get_axis("move_left", "move_right") != 0.0:
+			pass_velocity = Vector2(Input.get_axis("move_left", "move_right") * pass_speed, 0)
 		receive_hit = ball.try_receive(hand_position, receive_hand_offset.y, side, charge,
-			pass_velocity)
+			pass_velocity, self)
 		if receive_hit:
 			if jump_queued:
 				_start_jump()
 			else:
 				play("receive")
+		return
+	if animation == &"block" and is_jumping and has_blocked and is_playing():
+		if block_hit or frame < block_start_frame or frame > block_end_frame:
+			return
+		var facing := -1.0 if side == Ball.Side.RIGHT else 1.0
+		var hand_position := global_position + Vector2(block_hand_offset.x * facing, 0)
+		block_hit = ball.try_block(hand_position, height_above_ground + block_hand_offset.y, side, self)
 		return
 	if animation != &"spike" or not is_jumping or not has_spiked or not is_playing():
 		return
@@ -87,15 +149,31 @@ func _check_contact() -> void:
 	var facing := -1.0 if flip_h else 1.0
 	var hand_ground_position := global_position + Vector2(spike_hand_offset.x * facing, 0)
 	var hand_height := height_above_ground + spike_hand_offset.y
-	spike_hit = ball.try_spike(hand_ground_position, hand_height, facing, side)
+	spike_hit = ball.try_spike(hand_ground_position, hand_height, facing, side, self,
+		get_parent().stamina_factor(self))
 
 
 func _start_jump() -> void:
+	get_parent().spend_stamina(self, get_parent().jump_cost)
 	is_receiving = false
 	jump_queued = false
 	is_jumping = true
 	vertical_speed = jump_speed
 	play("jump")
+
+
+func _start_dive(direction: Vector2) -> void:
+	get_parent().spend_stamina(self, get_parent().dive_cost)
+	is_receiving = false
+	jump_queued = false
+	is_diving = true
+	dive_hit = false
+	dive_elapsed = 0.0
+	dive_direction = direction.normalized()
+	if dive_direction.x != 0.0:
+		flip_h = dive_direction.x < 0.0
+	play("slide")
+	_check_contact()
 
 
 func _on_animation_finished() -> void:
@@ -112,10 +190,16 @@ func reset_for_serve(ground_position: Vector2) -> void:
 	is_jumping = false
 	has_spiked = false
 	spike_hit = false
+	has_blocked = false
+	block_hit = false
 	is_receiving = false
 	receive_hit = false
 	receive_hold_time = 0.0
 	jump_queued = false
+	is_diving = false
+	dive_hit = false
+	dive_elapsed = 0.0
+	dive_direction = Vector2.ZERO
 	flip_h = side == Ball.Side.RIGHT
 	stop()
 	play("idle")
@@ -123,6 +207,24 @@ func reset_for_serve(ground_position: Vector2) -> void:
 
 
 func _physics_process(delta: float) -> void:
+	var previous := position
+	var movement_factor: float = get_parent().stamina_factor(self)
+	if is_diving:
+		var move_time := minf(delta, maxf(dive_duration - dive_elapsed, 0.0))
+		dive_elapsed += delta
+		if controls_enabled:
+			position += dive_direction * dive_speed * movement_factor * move_time
+			position = position.clamp(court_bounds.position, court_bounds.end)
+		if controls_enabled and dive_elapsed < dive_duration + dive_recovery:
+			_check_contact()
+			_update_height()
+			get_parent().update_stamina(self, delta, not position.is_equal_approx(previous), true)
+			return
+		is_diving = false
+		play("idle")
+		_update_height()
+		get_parent().update_stamina(self, delta, false, true)
+		return
 	if controls_enabled and is_receiving and not receive_hit and Input.is_action_pressed("receive"):
 		receive_hold_time = minf(receive_hold_time + delta, receive_charge_time)
 
@@ -130,10 +232,10 @@ func _physics_process(delta: float) -> void:
 	# While receiving, the arrows only aim the pass instead of walking.
 	if not controls_enabled or is_receiving:
 		direction = Vector2.ZERO
-	position += direction * speed * delta
+	position += direction * speed * movement_factor * delta
 	position = position.clamp(court_bounds.position, court_bounds.end)
 
-	if direction.x != 0.0 and not has_spiked and not is_receiving:
+	if direction.x != 0.0 and not has_spiked and not has_blocked and not is_receiving:
 		flip_h = direction.x < 0.0
 
 	if is_jumping:
@@ -144,6 +246,7 @@ func _physics_process(delta: float) -> void:
 			vertical_speed = 0.0
 			is_jumping = false
 			has_spiked = false
+			has_blocked = false
 
 	if not is_jumping and not is_receiving:
 		play("idle" if direction == Vector2.ZERO else "run")
@@ -156,6 +259,11 @@ func _physics_process(delta: float) -> void:
 		elif not is_playing():
 			play("receive")
 
+	_update_height()
+	get_parent().update_stamina(self, delta, not position.is_equal_approx(previous), is_jumping or is_receiving)
+
+
+func _update_height() -> void:
 	# Move only the drawing upward; position and the child shadow stay on the court.
 	var frame_height := sprite_frames.get_frame_texture(animation, frame).get_height()
 	offset.y = -frame_height / 2.0 - height_above_ground

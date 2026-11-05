@@ -64,12 +64,22 @@ spike={
 
 serve={
 "deadzone": 0.2,
-"events": [Object(InputEventKey,"physical_keycode":4194309), Object(InputEventKey,"physical_keycode":4194310)]
+"events": [Object(InputEventKey,"physical_keycode":76)]
 }
 
 receive={
 "deadzone": 0.2,
 "events": [Object(InputEventKey,"physical_keycode":75)]
+}
+
+block={
+"deadzone": 0.2,
+"events": [Object(InputEventKey,"physical_keycode":74)]
+}
+
+dive={
+"deadzone": 0.2,
+"events": [Object(InputEventKey,"physical_keycode":4194325)]
 }
 
 [physics]
