@@ -60,6 +60,16 @@ spike={
 ]
 }
 
+serve={
+"deadzone": 0.2,
+"events": [Object(InputEventKey,"physical_keycode":4194309), Object(InputEventKey,"physical_keycode":4194310)]
+}
+
+receive={
+"deadzone": 0.2,
+"events": [Object(InputEventKey,"physical_keycode":75)]
+}
+
 [physics]
 
 3d/physics_engine="Jolt Physics"
