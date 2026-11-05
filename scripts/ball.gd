@@ -19,6 +19,7 @@ const RADIUS: float = 5.0
 @export_range(1.0, 100.0) var receive_reach: float = 20.0
 @export_range(1.0, 100.0) var receive_height_reach: float = 16.0
 @export var receive_upward_speed: float = 260.0
+@export var charged_receive_upward_speed: float = 410.0
 @export var net_x: float = 200.0
 @export var net_height: float = 50.0
 @export var net_span: Vector2 = Vector2(145, 415)
@@ -74,7 +75,8 @@ func try_spike(hand_ground_position: Vector2, hand_height: float, facing: float,
 
 
 func try_receive(hand_ground_position: Vector2, hand_height: float,
-		hitter_side: int = Side.LEFT) -> bool:
+		hitter_side: int = Side.LEFT, charge: float = 0.0,
+		pass_velocity: Vector2 = Vector2.ZERO) -> bool:
 	if not rally_active or height_above_ground <= 0.0:
 		return false
 	if global_position.distance_to(hand_ground_position) > receive_reach:
@@ -83,11 +85,26 @@ func try_receive(hand_ground_position: Vector2, hand_height: float,
 		return false
 
 	last_touch = hitter_side
-	velocity = Vector2.ZERO
-	vertical_speed = receive_upward_speed
+	velocity = pass_velocity
+	vertical_speed = receive_speed(charge)
 	play("spin")
 	_update_visuals()
 	return true
+
+
+func receive_speed(charge: float) -> float:
+	return lerpf(receive_upward_speed,
+		maxf(receive_upward_speed, charged_receive_upward_speed), clampf(charge, 0.0, 1.0))
+
+
+# Seconds until the ball reaches the sand, starting from this height and upward speed.
+func seconds_to_ground(height: float, upward_speed: float) -> float:
+	return (upward_speed + sqrt(upward_speed * upward_speed + 2.0 * gravity * height)) / gravity
+
+
+# Where the ball will touch the sand if nothing hits it first.
+func predict_landing() -> Vector2:
+	return global_position + velocity * seconds_to_ground(height_above_ground, vertical_speed)
 
 
 func _physics_process(delta: float) -> void:

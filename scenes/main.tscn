@@ -14,6 +14,8 @@
 [ext_resource type="Texture2D" uid="uid://b7d2lii76gcpl" path="res://assets/BVA2/playerSlide.png" id="8_jbj1t"]
 [ext_resource type="Script" uid="uid://d12otfy1l42ua" path="res://scripts/ball.gd" id="9_ball_script"]
 [ext_resource type="Script" uid="uid://dfbw03au8y3bl" path="res://scripts/match.gd" id="10_match"]
+[ext_resource type="Script" path="res://scripts/opponent.gd" id="11_opponent"]
+[ext_resource type="Texture2D" path="res://assets/beachFill.png" id="12_fill"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_jscy8"]
 atlas = ExtResource("3_a8y0u")
@@ -779,17 +781,30 @@ animations = [{
 texture_filter = 1
 script = ExtResource("10_match")
 
+[node name="BeachFill" type="Sprite2D" parent="."]
+texture_repeat = 2
+position = Vector2(-1200, 0)
+texture = ExtResource("12_fill")
+centered = false
+region_enabled = true
+region_rect = Rect2(0, 0, 2800, 430)
+
 [node name="Beach" type="Sprite2D" parent="." unique_id=1509651797]
 texture = ExtResource("1_beach")
 centered = false
 
+[node name="LandingMarker" type="Sprite2D" parent="."]
+visible = false
+modulate = Color(1, 0.35, 0.2, 0.7)
+texture = ExtResource("5_shadow")
+
 [node name="PlayerLeft" type="AnimatedSprite2D" parent="." unique_id=891904134 node_paths=PackedStringArray("ball")]
 position = Vector2(100, 285)
 sprite_frames = SubResource("SpriteFrames_player")
-animation = &"block"
+animation = &"jump"
 autoplay = "idle"
-frame = 2
-frame_progress = 0.65872794
+frame = 7
+frame_progress = 1.0
 offset = Vector2(0, -21.5)
 script = ExtResource("7_movement")
 ball = NodePath("../Ball")
@@ -798,7 +813,7 @@ ball = NodePath("../Ball")
 show_behind_parent = true
 texture = ExtResource("5_shadow")
 
-[node name="PlayerRight" type="AnimatedSprite2D" parent="." unique_id=1917111200]
+[node name="PlayerRight" type="AnimatedSprite2D" parent="." unique_id=1917111200 node_paths=PackedStringArray("ball")]
 position = Vector2(300, 285)
 sprite_frames = SubResource("SpriteFrames_player")
 animation = &"idle"
@@ -807,6 +822,8 @@ frame = 7
 frame_progress = 0.5544884
 offset = Vector2(0, -21.5)
 flip_h = true
+script = ExtResource("11_opponent")
+ball = NodePath("../Ball")
 
 [node name="Shadow" type="Sprite2D" parent="PlayerRight" unique_id=1151136880]
 show_behind_parent = true
@@ -835,6 +852,7 @@ scale = Vector2(0.5, 0.5)
 texture = ExtResource("5_shadow")
 
 [node name="Scoreboard" type="CanvasLayer" parent="." unique_id=1119310435]
+follow_viewport_enabled = true
 
 [node name="LeftScore" type="Label" parent="Scoreboard" unique_id=359343793]
 offset_left = 20.0
@@ -871,3 +889,43 @@ theme_override_constants/outline_size = 3
 theme_override_font_sizes/font_size = 12
 text = "LEFT serves · Enter to start"
 horizontal_alignment = 1
+
+[node name="Popup" type="Panel" parent="Scoreboard"]
+process_mode = 3
+visible = false
+offset_left = 110.0
+offset_top = 130.0
+offset_right = 290.0
+offset_bottom = 290.0
+
+[node name="Box" type="VBoxContainer" parent="Scoreboard/Popup"]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 14.0
+offset_right = 160.0
+offset_bottom = 146.0
+theme_override_constants/separation = 8
+
+[node name="Title" type="Label" parent="Scoreboard/Popup/Box"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Paused"
+horizontal_alignment = 1
+
+[node name="ResumeButton" type="Button" parent="Scoreboard/Popup/Box"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Resume"
+
+[node name="RestartButton" type="Button" parent="Scoreboard/Popup/Box"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Restart"
+
+[node name="MenuButton" type="Button" parent="Scoreboard/Popup/Box"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Main Menu"
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(200, 215)

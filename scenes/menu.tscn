@@ -1,0 +1,85 @@
+[gd_scene format=3]
+
+[ext_resource type="Texture2D" path="res://assets/BVA2/beachbkgO.png" id="1_beach"]
+[ext_resource type="Script" path="res://scripts/menu.gd" id="2_menu"]
+[ext_resource type="Texture2D" path="res://assets/beachFill.png" id="3_fill"]
+
+[node name="Menu" type="Control"]
+texture_filter = 1
+layout_mode = 3
+anchors_preset = 0
+offset_right = 400.0
+offset_bottom = 430.0
+script = ExtResource("2_menu")
+
+[node name="BeachFill" type="Sprite2D" parent="."]
+texture_repeat = 2
+position = Vector2(-1200, 0)
+texture = ExtResource("3_fill")
+centered = false
+region_enabled = true
+region_rect = Rect2(0, 0, 2800, 430)
+
+[node name="Beach" type="TextureRect" parent="."]
+layout_mode = 0
+offset_right = 400.0
+offset_bottom = 430.0
+texture = ExtResource("1_beach")
+
+[node name="Title" type="Label" parent="."]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 80.0
+offset_right = 390.0
+offset_bottom = 120.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0.08, 0.2, 0.25, 1)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 32
+text = "VOLLEYBALL LEAGUE"
+horizontal_alignment = 1
+
+[node name="Buttons" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_left = 140.0
+offset_top = 160.0
+offset_right = 260.0
+offset_bottom = 270.0
+theme_override_constants/separation = 8
+
+[node name="PlayButton" type="Button" parent="Buttons"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Play"
+
+[node name="ControlsButton" type="Button" parent="Buttons"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Controls"
+
+[node name="QuitButton" type="Button" parent="Buttons"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Quit"
+
+[node name="ControlsText" type="Label" parent="."]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 290.0
+offset_right = 390.0
+offset_bottom = 410.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0.08, 0.2, 0.25, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 12
+text = "WASD / Arrows: move
+Enter: serve
+K: receive (hold for a higher toss)
+Hold ←/→ while receiving: pass over the net
+Space: jump
+L: spike
+Esc: pause"
+horizontal_alignment = 1
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(200, 215)
