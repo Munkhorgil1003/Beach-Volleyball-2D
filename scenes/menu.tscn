@@ -1,18 +1,135 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://b444c4rcfxusb"]
 
-[ext_resource type="Texture2D" path="res://assets/BVA2/beachbkgO.png" id="1_beach"]
-[ext_resource type="Script" path="res://scripts/menu.gd" id="2_menu"]
-[ext_resource type="Texture2D" path="res://assets/beachFill.png" id="3_fill"]
+[ext_resource type="Texture2D" uid="uid://bl3533e2nx5sy" path="res://assets/BVA2/beachbkgO.png" id="1_beach"]
+[ext_resource type="Script" uid="uid://dbikjr20e7lf" path="res://scripts/menu.gd" id="2_menu"]
+[ext_resource type="Texture2D" uid="uid://cmnc2b2c0qg1t" path="res://assets/beachFill.png" id="3_fill"]
+[ext_resource type="Texture2D" uid="uid://d1d6lynqxyac4" path="res://assets/BVA2/shadow1.png" id="4_shadow"]
 
-[node name="Menu" type="Control"]
+[sub_resource type="StyleBoxFlat" id="Style_hover"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.1, 0.32, 0.38, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.8, 1, 1, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="Style_selected"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.12, 0.38, 0.4, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 0.81, 0.36, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="Style_button"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.06, 0.2, 0.26, 0.96)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="Style_panel"]
+bg_color = Color(0.04, 0.15, 0.21, 0.98)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="Style_key"]
+content_margin_left = 4.0
+content_margin_top = 1.0
+content_margin_right = 4.0
+content_margin_bottom = 1.0
+bg_color = Color(0.08, 0.25, 0.31, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_left = 3
+corner_radius_bottom_right = 3
+
+[sub_resource type="StyleBoxFlat" id="Style_key_hover"]
+content_margin_left = 4.0
+content_margin_top = 1.0
+content_margin_right = 4.0
+content_margin_bottom = 1.0
+bg_color = Color(0.12, 0.36, 0.4, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 0.81, 0.36, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_left = 3
+corner_radius_bottom_right = 3
+
+[sub_resource type="Theme" id="Theme_menu"]
+default_font_size = 14
+KeyButton/base_type = &"Button"
+KeyButton/styles/normal = SubResource("Style_key")
+KeyButton/styles/hover = SubResource("Style_key_hover")
+KeyButton/styles/pressed = SubResource("Style_key_hover")
+KeyButton/styles/focus = SubResource("Style_key_hover")
+Button/styles/focus = SubResource("Style_hover")
+Button/styles/hover = SubResource("Style_hover")
+Button/styles/hover_pressed = SubResource("Style_selected")
+Button/styles/normal = SubResource("Style_button")
+Button/styles/pressed = SubResource("Style_selected")
+Label/colors/font_outline_color = Color(0.04, 0.15, 0.21, 1)
+Label/constants/outline_size = 3
+LineEdit/styles/focus = SubResource("Style_selected")
+LineEdit/styles/normal = SubResource("Style_button")
+OptionButton/styles/hover = SubResource("Style_hover")
+OptionButton/styles/normal = SubResource("Style_button")
+OptionButton/styles/pressed = SubResource("Style_selected")
+Panel/styles/panel = SubResource("Style_panel")
+
+[node name="Menu" type="Control" unique_id=533123831]
 texture_filter = 1
 layout_mode = 3
-anchors_preset = 0
-offset_right = 400.0
-offset_bottom = 430.0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -215.0
+offset_right = 200.0
+offset_bottom = 215.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_menu")
 script = ExtResource("2_menu")
 
-[node name="BeachFill" type="Sprite2D" parent="."]
+[node name="Backdrop" type="ColorRect" parent="." unique_id=2097642862]
+layout_mode = 0
+offset_left = -2000.0
+offset_top = -2000.0
+offset_right = 2400.0
+offset_bottom = 2430.0
+mouse_filter = 2
+color = Color(0.35, 0.76, 0.83, 1)
+
+[node name="BeachFill" type="Sprite2D" parent="." unique_id=802119487]
 texture_repeat = 2
 position = Vector2(-1200, 0)
 texture = ExtResource("3_fill")
@@ -20,97 +137,221 @@ centered = false
 region_enabled = true
 region_rect = Rect2(0, 0, 2800, 430)
 
-[node name="Beach" type="TextureRect" parent="."]
+[node name="Beach" type="TextureRect" parent="." unique_id=1703291059]
 layout_mode = 0
 offset_right = 400.0
 offset_bottom = 430.0
+mouse_filter = 2
 texture = ExtResource("1_beach")
 
-[node name="Title" type="Label" parent="."]
+[node name="Title" type="Label" parent="." unique_id=1032637100]
 layout_mode = 0
 offset_left = 10.0
-offset_top = 80.0
+offset_top = 8.0
 offset_right = 390.0
-offset_bottom = 120.0
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_outline_color = Color(0.08, 0.2, 0.25, 1)
-theme_override_constants/outline_size = 6
-theme_override_font_sizes/font_size = 32
+offset_bottom = 40.0
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/font_size = 25
 text = "VOLLEYBALL LEAGUE"
 horizontal_alignment = 1
 
-[node name="Difficulty" type="HBoxContainer" parent="."]
-offset_left = 85.0
-offset_top = 145.0
-offset_right = 315.0
-offset_bottom = 178.0
+[node name="Subtitle" type="Label" parent="." unique_id=1064022882]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 43.0
+offset_right = 390.0
+offset_bottom = 59.0
+theme_override_font_sizes/font_size = 11
+text = "Build your team. Take the court."
+horizontal_alignment = 1
+
+[node name="Mode" type="HBoxContainer" parent="."]
+offset_left = 40.0
+offset_top = 66.0
+offset_right = 360.0
+offset_bottom = 97.0
+theme_override_constants/separation = 10
+
+[node name="Label" type="Label" parent="Mode"]
+custom_minimum_size = Vector2(84, 0)
+layout_mode = 2
+text = "Mode"
+
+[node name="Selector" type="OptionButton" parent="Mode"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PlayerSlot" type="OptionButton" parent="."]
+visible = false
+offset_left = 100.0
+offset_top = 102.0
+offset_right = 300.0
+offset_bottom = 126.0
+theme_override_font_sizes/font_size = 12
+
+[node name="ModeHint" type="Label" parent="."]
+offset_left = 10.0
+offset_top = 402.0
+offset_right = 390.0
+offset_bottom = 420.0
+theme_override_font_sizes/font_size = 11
+horizontal_alignment = 1
+text = "You + AI against two AI players"
+
+[node name="TeamName" type="HBoxContainer" parent="." unique_id=1823975907]
+layout_mode = 0
+offset_left = 40.0
+offset_top = 132.0
+offset_right = 360.0
+offset_bottom = 162.0
+theme_override_constants/separation = 10
+
+[node name="Label" type="Label" parent="TeamName" unique_id=1859992624]
+custom_minimum_size = Vector2(84, 0)
+layout_mode = 2
+text = "Team name"
+
+[node name="Input" type="LineEdit" parent="TeamName" unique_id=609421557]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Your team name"
+max_length = 16
+select_all_on_focus = true
+
+[node name="CharacterTitle" type="Label" parent="." unique_id=2025035095]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 171.0
+offset_right = 390.0
+offset_bottom = 187.0
+theme_override_font_sizes/font_size = 11
+text = "YOUR CHARACTER · CLASSIC"
+horizontal_alignment = 1
+
+[node name="PreviewShadow" type="Sprite2D" parent="." unique_id=513855434]
+position = Vector2(200, 244)
+scale = Vector2(1.2, 0.7)
+texture = ExtResource("4_shadow")
+
+[node name="CharacterPreview" type="AnimatedSprite2D" parent="." unique_id=35769196]
+position = Vector2(200, 244)
+scale = Vector2(1.3, 1.3)
+offset = Vector2(0, -21.5)
+
+[node name="CharacterChoices" type="HBoxContainer" parent="." unique_id=890784676]
+layout_mode = 0
+offset_left = 40.0
+offset_top = 250.0
+offset_right = 360.0
+offset_bottom = 304.0
+theme_override_constants/separation = 4
+alignment = 1
+
+[node name="Difficulty" type="HBoxContainer" parent="." unique_id=2144469355]
+layout_mode = 0
+offset_left = 65.0
+offset_top = 316.0
+offset_right = 335.0
+offset_bottom = 345.0
 theme_override_constants/separation = 12
 
-[node name="Label" type="Label" parent="Difficulty"]
+[node name="Label" type="Label" parent="Difficulty" unique_id=1589636574]
 layout_mode = 2
-theme_override_colors/font_outline_color = Color(0.08, 0.2, 0.25, 1)
-theme_override_constants/outline_size = 3
-theme_override_font_sizes/font_size = 16
-text = "Difficulty"
+size_flags_horizontal = 3
+text = "Opponent difficulty"
 
-[node name="Selector" type="OptionButton" parent="Difficulty"]
-custom_minimum_size = Vector2(120, 32)
+[node name="Selector" type="OptionButton" parent="Difficulty" unique_id=534112898]
+custom_minimum_size = Vector2(104, 29)
+layout_mode = 2
+
+[node name="Buttons" type="HBoxContainer" parent="." unique_id=1879553617]
+layout_mode = 0
+offset_left = 40.0
+offset_top = 360.0
+offset_right = 360.0
+offset_bottom = 393.0
+theme_override_constants/separation = 8
+
+[node name="PlayButton" type="Button" parent="Buttons" unique_id=1895845022]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 16
-
-[node name="DifficultyHint" type="Label" parent="."]
-offset_left = 10.0
-offset_top = 180.0
-offset_right = 390.0
-offset_bottom = 196.0
-theme_override_colors/font_outline_color = Color(0.08, 0.2, 0.25, 1)
-theme_override_constants/outline_size = 3
-theme_override_font_sizes/font_size = 11
-text = "Current movement and attack balance."
-horizontal_alignment = 1
-
-[node name="Buttons" type="VBoxContainer" parent="."]
-layout_mode = 0
-offset_left = 140.0
-offset_top = 205.0
-offset_right = 260.0
-offset_bottom = 315.0
-theme_override_constants/separation = 8
-
-[node name="PlayButton" type="Button" parent="Buttons"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 16
 text = "Play"
 
-[node name="ControlsButton" type="Button" parent="Buttons"]
+[node name="ControlsButton" type="Button" parent="Buttons" unique_id=1987653907]
+custom_minimum_size = Vector2(98, 0)
 layout_mode = 2
-theme_override_font_sizes/font_size = 16
 text = "Controls"
 
-[node name="QuitButton" type="Button" parent="Buttons"]
+[node name="QuitButton" type="Button" parent="Buttons" unique_id=694670605]
+custom_minimum_size = Vector2(64, 0)
 layout_mode = 2
-theme_override_font_sizes/font_size = 16
 text = "Quit"
 
-[node name="ControlsText" type="Label" parent="."]
-layout_mode = 0
-offset_left = 10.0
-offset_top = 330.0
-offset_right = 390.0
-offset_bottom = 425.0
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_outline_color = Color(0.08, 0.2, 0.25, 1)
-theme_override_constants/outline_size = 3
-theme_override_constants/line_spacing = -2
-theme_override_font_sizes/font_size = 11
-text = "2v2: you + AI against two AI players
-WASD / Arrows: move · Shift + direction: dive
-L: serve / spike · Space: jump
-K: pass / set on 1st and 2nd touches
-←/→ + K: return on the 3rd touch
-J: jump-block near net · Esc: pause"
+[node name="ControlsOverlay" type="Control" parent="."]
+visible = false
+offset_right = 400.0
+offset_bottom = 430.0
+
+[node name="Dim" type="ColorRect" parent="ControlsOverlay"]
+offset_left = -2000.0
+offset_top = -2000.0
+offset_right = 2400.0
+offset_bottom = 2430.0
+color = Color(0, 0, 0, 0.6)
+
+[node name="Panel" type="Panel" parent="ControlsOverlay"]
+offset_left = 20.0
+offset_top = 22.0
+offset_right = 380.0
+offset_bottom = 408.0
+
+[node name="Title" type="Label" parent="ControlsOverlay/Panel"]
+offset_left = 20.0
+offset_top = 12.0
+offset_right = 340.0
+offset_bottom = 44.0
+theme_override_font_sizes/font_size = 21
+text = "Controls & keys"
 horizontal_alignment = 1
 
-[node name="Camera2D" type="Camera2D" parent="."]
-position = Vector2(200, 215)
+[node name="Player" type="OptionButton" parent="ControlsOverlay/Panel"]
+offset_left = 80.0
+offset_top = 50.0
+offset_right = 280.0
+offset_bottom = 78.0
+theme_override_font_sizes/font_size = 13
+
+[node name="ControlsText" type="Label" parent="ControlsOverlay/Panel"]
+offset_left = 12.0
+offset_top = 87.0
+offset_right = 348.0
+offset_bottom = 121.0
+theme_override_font_sizes/font_size = 11
+horizontal_alignment = 1
+text = "Click a binding, then press a key. Esc cancels.
+Pass also tips in air; spike also serves."
+
+[node name="BindingRows" type="VBoxContainer" parent="ControlsOverlay/Panel"]
+offset_left = 20.0
+offset_top = 126.0
+offset_right = 340.0
+offset_bottom = 340.0
+theme_override_constants/separation = 1
+
+[node name="Buttons" type="HBoxContainer" parent="ControlsOverlay/Panel"]
+offset_left = 20.0
+offset_top = 347.0
+offset_right = 340.0
+offset_bottom = 377.0
+theme_override_constants/separation = 10
+
+[node name="ResetButton" type="Button" parent="ControlsOverlay/Panel/Buttons"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Reset keys"
+
+[node name="CloseButton" type="Button" parent="ControlsOverlay/Panel/Buttons"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Back"

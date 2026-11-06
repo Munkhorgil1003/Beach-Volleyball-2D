@@ -1,0 +1,18 @@
+Audio credits
+
+Beach waves - wave_01_cc0-18363__jasinski__alkaibeach
+  Author: jasinski (Freesound #18363)
+  License: CC0 (per file name)
+  Converted from FLAC to WAV and crossfaded into a seamless 3.5 s loop.
+
+Volleyball spike - 816991__luisa_sanchez__volleyball-spike.wav
+  Author: luisa_sanchez (https://freesound.org/s/816991/)
+  License: TODO - check the license on the Freesound page
+
+Coach whistle - 705274__robinhood76__11633-coach-training-whistle.wav
+  Author: Robinhood76 (https://freesound.org/s/705274/)
+  License: TODO - check the license on the Freesound page
+
+Seagulls - gull/ogg/gull_01-03.ogg
+  Author: Jonathon Jongsma (https://www.xeno-canto.org/75111)
+  License: CC BY-SA 3.0 - attribution required in the game credits

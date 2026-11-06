@@ -16,6 +16,12 @@
 [ext_resource type="Script" uid="uid://dfbw03au8y3bl" path="res://scripts/match.gd" id="10_match"]
 [ext_resource type="Script" uid="uid://bspjil5jonh2h" path="res://scripts/opponent.gd" id="11_opponent"]
 [ext_resource type="Texture2D" uid="uid://cmnc2b2c0qg1t" path="res://assets/beachFill.png" id="12_fill"]
+[ext_resource type="AudioStream" uid="uid://b8m01i5jte50r" path="res://assets/audios/816991__luisa_sanchez__volleyball-spike.wav" id="17_jscy8"]
+[ext_resource type="AudioStream" uid="uid://ca4dycftmh8vk" path="res://assets/audios/wave_01_cc0-18363__jasinski__alkaibeach.wav" id="18_pm3ni"]
+[ext_resource type="AudioStream" uid="uid://rma5as3hlsn5" path="res://assets/audios/gull/ogg/gull_01.ogg" id="19_y6deb"]
+[ext_resource type="AudioStream" uid="uid://cg5008u1u2dv8" path="res://assets/audios/gull/ogg/gull_02.ogg" id="20_og1vs"]
+[ext_resource type="AudioStream" uid="uid://cpetkeie3yeqa" path="res://assets/audios/gull/ogg/gull_03.ogg" id="21_2wyq8"]
+[ext_resource type="AudioStream" uid="uid://dtqgxki4q80lo" path="res://assets/audios/705274__robinhood76__11633-coach-training-whistle.wav" id="22_vxglm"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_jscy8"]
 atlas = ExtResource("3_a8y0u")
@@ -587,6 +593,81 @@ animations = [{
 "speed": 16.0
 }]
 
+[sub_resource type="AtlasTexture" id="Atlas_net_0"]
+atlas = ExtResource("2_net")
+region = Rect2(0, 0, 45, 450)
+
+[sub_resource type="AtlasTexture" id="Atlas_net_1"]
+atlas = ExtResource("2_net")
+region = Rect2(45, 0, 45, 450)
+
+[sub_resource type="AtlasTexture" id="Atlas_net_2"]
+atlas = ExtResource("2_net")
+region = Rect2(90, 0, 45, 450)
+
+[sub_resource type="AtlasTexture" id="Atlas_net_3"]
+atlas = ExtResource("2_net")
+region = Rect2(135, 0, 45, 450)
+
+[sub_resource type="AtlasTexture" id="Atlas_net_4"]
+atlas = ExtResource("2_net")
+region = Rect2(180, 0, 45, 450)
+
+[sub_resource type="AtlasTexture" id="Atlas_net_5"]
+atlas = ExtResource("2_net")
+region = Rect2(225, 0, 45, 450)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_net"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("Atlas_net_0")
+}],
+"loop": 1,
+"name": &"idle",
+"speed": 1.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("Atlas_net_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("Atlas_net_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("Atlas_net_3")
+}, {
+"duration": 1.0,
+"texture": SubResource("Atlas_net_4")
+}, {
+"duration": 1.0,
+"texture": SubResource("Atlas_net_5")
+}, {
+"duration": 1.0,
+"texture": SubResource("Atlas_net_0")
+}],
+"loop": 0,
+"name": &"shake",
+"speed": 18.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("Atlas_net_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("Atlas_net_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("Atlas_net_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("Atlas_net_0")
+}],
+"loop": 0,
+"name": &"skim",
+"speed": 14.0
+}]
+
 [sub_resource type="AtlasTexture" id="Atlas_ball_bounce_0"]
 atlas = ExtResource("8_ball_bounce")
 region = Rect2(0, 0, 15, 20)
@@ -777,63 +858,23 @@ animations = [{
 "speed": 16.0
 }]
 
-[sub_resource type="AtlasTexture" id="Atlas_net_0"]
-atlas = ExtResource("2_net")
-region = Rect2(0, 0, 45, 450)
+[sub_resource type="StyleBoxFlat" id="StyleBox_score_left"]
+bg_color = Color(0.25, 0.07, 0.11, 0.94)
+border_width_bottom = 3
+border_color = Color(1, 0.4, 0.478, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
 
-[sub_resource type="AtlasTexture" id="Atlas_net_1"]
-atlas = ExtResource("2_net")
-region = Rect2(45, 0, 45, 450)
-
-[sub_resource type="AtlasTexture" id="Atlas_net_2"]
-atlas = ExtResource("2_net")
-region = Rect2(90, 0, 45, 450)
-
-[sub_resource type="AtlasTexture" id="Atlas_net_3"]
-atlas = ExtResource("2_net")
-region = Rect2(135, 0, 45, 450)
-
-[sub_resource type="AtlasTexture" id="Atlas_net_4"]
-atlas = ExtResource("2_net")
-region = Rect2(180, 0, 45, 450)
-
-[sub_resource type="AtlasTexture" id="Atlas_net_5"]
-atlas = ExtResource("2_net")
-region = Rect2(225, 0, 45, 450)
-
-[sub_resource type="SpriteFrames" id="SpriteFrames_net"]
-animations = [{
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("Atlas_net_0")
-}],
-"loop": 1,
-"name": &"idle",
-"speed": 1.0
-}, {
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("Atlas_net_1")
-}, {
-"duration": 1.0,
-"texture": SubResource("Atlas_net_2")
-}, {
-"duration": 1.0,
-"texture": SubResource("Atlas_net_3")
-}, {
-"duration": 1.0,
-"texture": SubResource("Atlas_net_4")
-}, {
-"duration": 1.0,
-"texture": SubResource("Atlas_net_5")
-}, {
-"duration": 1.0,
-"texture": SubResource("Atlas_net_0")
-}],
-"loop": 0,
-"name": &"shake",
-"speed": 18.0
-}]
+[sub_resource type="StyleBoxFlat" id="StyleBox_score_right"]
+bg_color = Color(0.045, 0.14, 0.27, 0.94)
+border_width_bottom = 3
+border_color = Color(0.384, 0.706, 1, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
 
 [sub_resource type="StyleBoxFlat" id="StyleBox_stamina_background"]
 bg_color = Color(0.06, 0.16, 0.2, 0.9)
@@ -845,6 +886,26 @@ border_color = Color(0.8, 0.95, 1, 0.8)
 
 [sub_resource type="StyleBoxFlat" id="StyleBox_stamina_fill"]
 bg_color = Color(0.85, 1, 0.85, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_point"]
+bg_color = Color(0.25, 0.07, 0.11, 0.97)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 0.4, 0.478, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_2f3dj"]
+random_pitch = 1.1
+random_volume_offset_db = 3.0
+streams_count = 3
+stream_0/stream = ExtResource("19_y6deb")
+stream_1/stream = ExtResource("20_og1vs")
+stream_2/stream = ExtResource("21_2wyq8")
 
 [node name="Main" type="Node2D" unique_id=1737799365]
 texture_filter = 1
@@ -858,9 +919,27 @@ centered = false
 region_enabled = true
 region_rect = Rect2(0, 0, 2800, 430)
 
+[node name="BeachBottom" type="Sprite2D" parent="." unique_id=586613805]
+texture_repeat = 2
+position = Vector2(-1200, 430)
+texture = ExtResource("12_fill")
+centered = false
+region_enabled = true
+region_rect = Rect2(0, 300, 2800, 128)
+
 [node name="Beach" type="Sprite2D" parent="." unique_id=1509651797]
 texture = ExtResource("1_beach")
 centered = false
+
+[node name="CourtColors" type="Node2D" parent="." unique_id=971567713]
+
+[node name="Left" type="Polygon2D" parent="CourtColors" unique_id=927916821]
+color = Color(1, 0.2, 0.3, 0.065)
+polygon = PackedVector2Array(17, 146, 199, 146, 199, 414, 17, 414)
+
+[node name="Right" type="Polygon2D" parent="CourtColors" unique_id=1705813571]
+color = Color(0.15, 0.45, 1, 0.065)
+polygon = PackedVector2Array(201, 146, 383, 146, 383, 414, 201, 414)
 
 [node name="LandingMarker" type="Sprite2D" parent="." unique_id=189614976]
 visible = false
@@ -962,12 +1041,45 @@ z_as_relative = false
 scale = Vector2(0.5, 0.5)
 texture = ExtResource("5_shadow")
 
+[node name="HitSound" type="AudioStreamPlayer2D" parent="Ball" unique_id=1058718344]
+stream = ExtResource("17_jscy8")
+max_polyphony = 3
+
 [node name="Scoreboard" type="CanvasLayer" parent="." unique_id=1119310435]
 
-[node name="LeftScore" type="Label" parent="Scoreboard" unique_id=359343793]
-offset_left = 20.0
-offset_top = 12.0
+[node name="PointFlash" type="ColorRect" parent="Scoreboard" unique_id=1490444218]
+modulate = Color(1, 1, 1, 0)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(1, 0.4, 0.478, 0.12)
+
+[node name="LeftScoreBack" type="Panel" parent="Scoreboard" unique_id=964453441]
+offset_left = 10.0
+offset_top = 8.0
 offset_right = 180.0
+offset_bottom = 44.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBox_score_left")
+
+[node name="RightScoreBack" type="Panel" parent="Scoreboard" unique_id=1129805988]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -180.0
+offset_top = 8.0
+offset_right = -10.0
+offset_bottom = 44.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBox_score_right")
+
+[node name="LeftScore" type="Label" parent="Scoreboard" unique_id=359343793]
+offset_left = 16.0
+offset_top = 12.0
+offset_right = 174.0
 offset_bottom = 42.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_outline_color = Color(0.08, 0.2, 0.25, 1)
@@ -977,12 +1089,14 @@ text = "LEFT  0"
 horizontal_alignment = 1
 
 [node name="RightScore" type="Label" parent="Scoreboard" unique_id=432596248]
+anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -180.0
+offset_left = -174.0
 offset_top = 12.0
-offset_right = -20.0
+offset_right = -16.0
 offset_bottom = 42.0
+grow_horizontal = 0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_outline_color = Color(0.08, 0.2, 0.25, 1)
 theme_override_constants/outline_size = 4
@@ -991,11 +1105,13 @@ text = "RIGHT  0"
 horizontal_alignment = 1
 
 [node name="Status" type="Label" parent="Scoreboard" unique_id=1814135421]
+anchors_preset = 10
 anchor_right = 1.0
 offset_left = 10.0
 offset_top = 98.0
 offset_right = -10.0
 offset_bottom = 134.0
+grow_horizontal = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_outline_color = Color(0.08, 0.2, 0.25, 1)
 theme_override_constants/outline_size = 3
@@ -1003,7 +1119,7 @@ theme_override_font_sizes/font_size = 12
 text = "LEFT serves · L to start"
 horizontal_alignment = 1
 
-[node name="Stamina" type="Control" parent="Scoreboard"]
+[node name="Stamina" type="Control" parent="Scoreboard" unique_id=144858364]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -1012,29 +1128,29 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="Left" type="VBoxContainer" parent="Scoreboard/Stamina"]
+[node name="Left" type="VBoxContainer" parent="Scoreboard/Stamina" unique_id=1867370836]
+layout_mode = 0
 offset_left = 10.0
-offset_right = 170.0
 offset_top = 46.0
+offset_right = 170.0
 offset_bottom = 86.0
+mouse_filter = 2
 theme_override_constants/separation = 3
-mouse_filter = 2
 
-[node name="You" type="HBoxContainer" parent="Scoreboard/Stamina/Left"]
+[node name="You" type="HBoxContainer" parent="Scoreboard/Stamina/Left" unique_id=1018933404]
 layout_mode = 2
-theme_override_constants/separation = 6
 mouse_filter = 2
+theme_override_constants/separation = 6
 
-[node name="Name" type="Label" parent="Scoreboard/Stamina/Left/You"]
+[node name="Name" type="Label" parent="Scoreboard/Stamina/Left/You" unique_id=1801142010]
 custom_minimum_size = Vector2(56, 0)
 layout_mode = 2
 theme_override_colors/font_outline_color = Color(0.08, 0.2, 0.25, 1)
 theme_override_constants/outline_size = 3
 theme_override_font_sizes/font_size = 11
 text = "You"
-mouse_filter = 2
 
-[node name="Bar" type="ProgressBar" parent="Scoreboard/Stamina/Left/You"]
+[node name="Bar" type="ProgressBar" parent="Scoreboard/Stamina/Left/You" unique_id=1074796736]
 custom_minimum_size = Vector2(0, 7)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -1045,21 +1161,20 @@ theme_override_styles/fill = SubResource("StyleBox_stamina_fill")
 value = 100.0
 show_percentage = false
 
-[node name="Partner" type="HBoxContainer" parent="Scoreboard/Stamina/Left"]
+[node name="Partner" type="HBoxContainer" parent="Scoreboard/Stamina/Left" unique_id=1802574199]
 layout_mode = 2
-theme_override_constants/separation = 6
 mouse_filter = 2
+theme_override_constants/separation = 6
 
-[node name="Name" type="Label" parent="Scoreboard/Stamina/Left/Partner"]
+[node name="Name" type="Label" parent="Scoreboard/Stamina/Left/Partner" unique_id=2011950424]
 custom_minimum_size = Vector2(56, 0)
 layout_mode = 2
 theme_override_colors/font_outline_color = Color(0.08, 0.2, 0.25, 1)
 theme_override_constants/outline_size = 3
 theme_override_font_sizes/font_size = 11
 text = "Partner"
-mouse_filter = 2
 
-[node name="Bar" type="ProgressBar" parent="Scoreboard/Stamina/Left/Partner"]
+[node name="Bar" type="ProgressBar" parent="Scoreboard/Stamina/Left/Partner" unique_id=987120452]
 custom_minimum_size = Vector2(0, 7)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -1070,31 +1185,31 @@ theme_override_styles/fill = SubResource("StyleBox_stamina_fill")
 value = 100.0
 show_percentage = false
 
-[node name="Right" type="VBoxContainer" parent="Scoreboard/Stamina"]
+[node name="Right" type="VBoxContainer" parent="Scoreboard/Stamina" unique_id=428813646]
+layout_mode = 0
 anchor_left = 1.0
 anchor_right = 1.0
 offset_left = -170.0
-offset_right = -10.0
 offset_top = 46.0
+offset_right = -10.0
 offset_bottom = 86.0
+mouse_filter = 2
 theme_override_constants/separation = 3
-mouse_filter = 2
 
-[node name="RivalOne" type="HBoxContainer" parent="Scoreboard/Stamina/Right"]
+[node name="RivalOne" type="HBoxContainer" parent="Scoreboard/Stamina/Right" unique_id=1324464524]
 layout_mode = 2
-theme_override_constants/separation = 6
 mouse_filter = 2
+theme_override_constants/separation = 6
 
-[node name="Name" type="Label" parent="Scoreboard/Stamina/Right/RivalOne"]
+[node name="Name" type="Label" parent="Scoreboard/Stamina/Right/RivalOne" unique_id=346898472]
 custom_minimum_size = Vector2(56, 0)
 layout_mode = 2
 theme_override_colors/font_outline_color = Color(0.08, 0.2, 0.25, 1)
 theme_override_constants/outline_size = 3
 theme_override_font_sizes/font_size = 11
 text = "Rival 1"
-mouse_filter = 2
 
-[node name="Bar" type="ProgressBar" parent="Scoreboard/Stamina/Right/RivalOne"]
+[node name="Bar" type="ProgressBar" parent="Scoreboard/Stamina/Right/RivalOne" unique_id=1242219942]
 custom_minimum_size = Vector2(0, 7)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -1105,21 +1220,20 @@ theme_override_styles/fill = SubResource("StyleBox_stamina_fill")
 value = 100.0
 show_percentage = false
 
-[node name="RivalTwo" type="HBoxContainer" parent="Scoreboard/Stamina/Right"]
+[node name="RivalTwo" type="HBoxContainer" parent="Scoreboard/Stamina/Right" unique_id=935665311]
 layout_mode = 2
-theme_override_constants/separation = 6
 mouse_filter = 2
+theme_override_constants/separation = 6
 
-[node name="Name" type="Label" parent="Scoreboard/Stamina/Right/RivalTwo"]
+[node name="Name" type="Label" parent="Scoreboard/Stamina/Right/RivalTwo" unique_id=1412490941]
 custom_minimum_size = Vector2(56, 0)
 layout_mode = 2
 theme_override_colors/font_outline_color = Color(0.08, 0.2, 0.25, 1)
 theme_override_constants/outline_size = 3
 theme_override_font_sizes/font_size = 11
 text = "Rival 2"
-mouse_filter = 2
 
-[node name="Bar" type="ProgressBar" parent="Scoreboard/Stamina/Right/RivalTwo"]
+[node name="Bar" type="ProgressBar" parent="Scoreboard/Stamina/Right/RivalTwo" unique_id=1855111]
 custom_minimum_size = Vector2(0, 7)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -1130,9 +1244,74 @@ theme_override_styles/fill = SubResource("StyleBox_stamina_fill")
 value = 100.0
 show_percentage = false
 
+[node name="PointBanner" type="Control" parent="Scoreboard" unique_id=1335140995]
+visible = false
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -160.0
+offset_top = -56.0
+offset_right = 160.0
+offset_bottom = 56.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Background" type="Panel" parent="Scoreboard/PointBanner" unique_id=411273729]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBox_point")
+
+[node name="Accent" type="ColorRect" parent="Scoreboard/PointBanner" unique_id=368046768]
+layout_mode = 0
+offset_left = 12.0
+offset_top = 2.0
+offset_right = 308.0
+offset_bottom = 5.0
+mouse_filter = 2
+color = Color(1, 0.4, 0.478, 1)
+
+[node name="Title" type="Label" parent="Scoreboard/PointBanner" unique_id=646187742]
+layout_mode = 0
+offset_left = 14.0
+offset_top = 12.0
+offset_right = 306.0
+offset_bottom = 32.0
+theme_override_font_sizes/font_size = 14
+text = "POINT · LEFT"
+horizontal_alignment = 1
+
+[node name="Score" type="Label" parent="Scoreboard/PointBanner" unique_id=197411884]
+layout_mode = 0
+offset_left = 14.0
+offset_top = 30.0
+offset_right = 306.0
+offset_bottom = 82.0
+theme_override_font_sizes/font_size = 40
+text = "1  :  0"
+horizontal_alignment = 1
+
+[node name="Reason" type="Label" parent="Scoreboard/PointBanner" unique_id=1624531564]
+layout_mode = 0
+offset_left = 14.0
+offset_top = 87.0
+offset_right = 306.0
+offset_bottom = 106.0
+theme_override_font_sizes/font_size = 12
+text = "BALL DOWN · +1 POINT"
+horizontal_alignment = 1
+
 [node name="Popup" type="Panel" parent="Scoreboard" unique_id=164071258]
 process_mode = 3
 visible = false
+anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -1172,4 +1351,24 @@ theme_override_font_sizes/font_size = 14
 text = "Main Menu"
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=691384880]
-position = Vector2(200, 215)
+position = Vector2(200, 239)
+zoom = Vector2(0.9, 0.9)
+
+[node name="Audio" type="Node" parent="." unique_id=415034]
+
+[node name="Waves" type="AudioStreamPlayer" parent="Audio" unique_id=1081443708]
+process_mode = 3
+stream = ExtResource("18_pm3ni")
+volume_db = -14.0
+autoplay = true
+
+[node name="Gulls" type="AudioStreamPlayer" parent="Audio" unique_id=71391751]
+stream = SubResource("AudioStreamRandomizer_2f3dj")
+volume_db = -18.0
+
+[node name="GullTimer" type="Timer" parent="Audio" unique_id=1161099379]
+one_shot = true
+
+[node name="Whistle" type="AudioStreamPlayer" parent="Audio" unique_id=649327792]
+stream = ExtResource("22_vxglm")
+volume_db = -6.0

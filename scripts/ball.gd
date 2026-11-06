@@ -4,6 +4,9 @@ signal landed(ground_position: Vector2, last_touch: int)
 signal contact_made(side: int, touches: int)
 signal fault(side: int, reason: String)
 signal net_hit
+signal net_skimmed
+# Strength runs from a soft pass (low) to a full spike (1.0).
+signal struck(strength: float)
 
 enum Side { LEFT, RIGHT }
 const RADIUS: float = 5.0
@@ -18,7 +21,14 @@ const RADIUS: float = 5.0
 @export_range(1.0, 100.0) var spike_reach: float = 44.0
 @export_range(1.0, 100.0) var spike_height_reach: float = 40.0
 @export var spike_speed: float = 260.0
-@export var spike_downward_speed: float = 100.0
+@export var spike_downward_speed: float = 220.0
+@export var spike_upward_speed: float = 220.0
+# Player-to-ball ground offset needed to reach the strongest angle.
+@export_range(1.0, 100.0) var spike_position_range: float = 32.0
+@export_range(0.0, 60.0) var spike_side_angle: float = 40.0
+@export var serve_upward_speed: float = 260.0
+@export var tip_upward_speed: float = 290.0
+@export_range(15.0, 100.0) var tip_distance_past_net: float = 50.0
 @export_range(1.0, 100.0) var block_reach: float = 20.0
 @export_range(1.0, 100.0) var block_height_reach: float = 22.0
 @export_range(1.0, 100.0) var block_net_distance: float = 32.0
@@ -32,6 +42,8 @@ const RADIUS: float = 5.0
 @export var net_height: float = 50.0
 @export var net_span: Vector2 = Vector2(145, 415)
 @export_range(0.0, 1.0) var net_rebound: float = 0.2
+# Clearing the net top by less than this still brushes the tape.
+@export_range(0.0, 50.0) var net_skim_height: float = 8.0
 
 var last_touch: int = Side.LEFT
 var rally_active: bool = true
@@ -72,6 +84,7 @@ func serve(ground_velocity: Vector2, height: float, upward_speed: float, toss_on
 	if not toss_only:
 		last_hitter = server
 		contact_team = last_touch
+		struck.emit(0.85)
 	velocity = ground_velocity
 	height_above_ground = height
 	vertical_speed = upward_speed
@@ -82,20 +95,44 @@ func serve(ground_velocity: Vector2, height: float, upward_speed: float, toss_on
 
 
 func try_spike(hand_ground_position: Vector2, hand_height: float, facing: float,
-		hitter_side: int = Side.LEFT, hitter: Node = null, power: float = 1.0) -> bool:
+		hitter_side: int = Side.LEFT, hitter: Node = null, power: float = 1.0, tip: bool = false) -> bool:
 	if not rally_active or height_above_ground <= 0.0 or facing == 0.0:
+		return false
+	if tip and serve_pending:
 		return false
 	if global_position.distance_to(hand_ground_position) > spike_reach:
 		return false
 	# Height measures the bottom of the ball; its center is about five pixels higher.
 	if absf(height_above_ground + RADIUS - hand_height) > spike_height_reach:
 		return false
+	if not is_instance_valid(hitter) or not hitter is Node2D:
+		return false
 
+	var serving := serve_pending
+	var contact_offset := global_position - (hitter as Node2D).global_position
 	if not _register_contact(hitter_side, hitter):
 		return false
 	power = clampf(power, 0.7, 1.0)
-	velocity = Vector2(signf(facing) * spike_speed * power, 0)
-	vertical_speed = -spike_downward_speed * power
+	var direction := 1.0 if hitter_side == Side.LEFT else -1.0
+	if serving:
+		# Keep baseline serves lifted so they can cross the whole court.
+		velocity = Vector2(direction * spike_speed * power, 0)
+		vertical_speed = serve_upward_speed
+	elif tip:
+		# A soft arc clears the hands and drops just behind the net defender.
+		vertical_speed = tip_upward_speed
+		var side_aim := clampf(contact_offset.y / spike_position_range, -1.0, 1.0)
+		var target := Vector2(net_x + direction * tip_distance_past_net,
+			clampf(global_position.y + side_aim * 40.0, net_span.x + RADIUS, net_span.y - RADIUS))
+		velocity = (target - global_position) / seconds_to_ground(height_above_ground, vertical_speed)
+	else:
+		# Mirror X for the right team: ball in front = steep, ball behind = lofted.
+		var forward_offset := clampf(contact_offset.x * direction / spike_position_range, -1.0, 1.0)
+		vertical_speed = -forward_offset * (spike_downward_speed if forward_offset >= 0.0 else spike_upward_speed) * power
+		# Y aims away from the player's body; ground speed stays constant on diagonals.
+		var side_angle := deg_to_rad(spike_side_angle) * clampf(contact_offset.y / spike_position_range, -1.0, 1.0)
+		velocity = Vector2(direction * cos(side_angle), sin(side_angle)) * spike_speed * power
+	struck.emit(0.45 if tip else (0.85 if serving else power))
 	play("spin")
 	_update_visuals()
 	return true
@@ -124,6 +161,7 @@ func try_block(hand_ground_position: Vector2, hand_height: float, blocker_side: 
 		return false
 	velocity = Vector2(direction * block_return_speed, velocity.y * 0.35)
 	vertical_speed = block_upward_speed
+	struck.emit(0.7)
 	play("spin")
 	_update_visuals()
 	return true
@@ -143,6 +181,7 @@ func try_receive(hand_ground_position: Vector2, hand_height: float,
 		return false
 	velocity = pass_velocity
 	vertical_speed = receive_speed(charge)
+	struck.emit(lerpf(0.4, 0.55, clampf(charge, 0.0, 1.0)))
 	play("spin")
 	_update_visuals()
 	return true
@@ -221,12 +260,14 @@ func _physics_process(delta: float) -> void:
 		var time_to_net := delta * clampf(distance_to_net / travel.x, 0.0, 1.0)
 		_advance_motion(time_to_net)
 		position.x = net_x
-		if position.y >= net_span.x and position.y <= net_span.y \
-				and height_above_ground <= net_height:
+		var within_net := position.y >= net_span.x and position.y <= net_span.y
+		if within_net and height_above_ground <= net_height:
 			position.x = net_x - direction * RADIUS
 			velocity = Vector2(-velocity.x, velocity.y) * net_rebound
 			vertical_speed = minf(vertical_speed, 0.0)
 			net_hit.emit()
+		elif within_net and height_above_ground <= net_height + net_skim_height:
+			net_skimmed.emit()
 		_advance_motion(delta - time_to_net)
 	else:
 		_advance_motion(delta)
