@@ -7,7 +7,7 @@ enum State { WAITING_FOR_SERVE, RALLY, POINT, GAME_OVER }
 
 @export var court_bounds: Rect2 = Rect2(16, 145, 368, 270)
 @export var point_pause: float = 1.2
-@export var winning_score: int = 21
+@export var winning_score: int = 7
 @export var toss_height: float = 160.0
 @export var toss_speed: float = 160.0
 @export var ai_serve_delay: float = 1.0
@@ -84,17 +84,17 @@ func _ready() -> void:
 	Menu.Player.apply_bindings(get_tree().get_meta("keybindings", Menu.Player.load_bindings()))
 	local_two_player = bool(get_tree().get_meta("local_two_player", Menu.load_local_two_player()))
 	human_players = [player_left]
+	var profiles: Array = [get_tree().get_meta("player_profile", Menu.load_profile())]
 	if local_two_player:
 		_add_second_player()
 		var second_profile: Dictionary = get_tree().get_meta("player_two_profile", Menu.load_profile(Menu.SETTINGS_PATH, 1))
+		profiles.append(second_profile)
 		right_team_name = Menu.clean_team_name(second_profile.team_name, "RIGHT")
-		player_right.sprite_frames = Menu.Player.frames_for_character(player_right.sprite_frames, second_profile.character)
 		$Scoreboard/Stamina/Left/You/Name.text = "Player 1"
 		$Scoreboard/Stamina/Right/RivalOne/Name.text = "Player 2"
 		$Scoreboard/Stamina/Right/RivalTwo/Name.text = "Partner"
-	var profile: Dictionary = get_tree().get_meta("player_profile", Menu.load_profile())
-	team_name = Menu.clean_team_name(profile.team_name)
-	player_left.sprite_frames = Menu.Player.frames_for_character(player_left.sprite_frames, profile.character)
+	team_name = Menu.clean_team_name(profiles[0].team_name)
+	_assign_characters(profiles)
 	difficulty = int(get_tree().get_meta("difficulty", Menu.load_difficulty()))
 	for side in range(teams.size()):
 		for player in teams[side]:
@@ -124,6 +124,21 @@ func _ready() -> void:
 	_update_scores()
 	_prepare_serve()
 	_update_stamina_bars()
+
+
+func _assign_characters(profiles: Array) -> void:
+	# Always use the original editable frames so everyone's timing stays in sync.
+	var template: SpriteFrames = player_left.sprite_frames
+	var available: Array = [3, 2, 4, 1, 5, 6, 0]
+	for index in range(human_players.size()):
+		var character: int = profiles[index].character
+		human_players[index].sprite_frames = Menu.Player.frames_for_character(template, character)
+		available.erase(character)
+	for team in teams:
+		for player in team:
+			player.modulate = Color.WHITE
+			if not is_human(player):
+				player.sprite_frames = Menu.Player.frames_for_character(template, available.pop_front())
 
 
 func _add_second_player() -> void:

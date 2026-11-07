@@ -37,7 +37,7 @@ const CHARACTER_FOLDERS = [
 @export_range(0.1, 3.0) var receive_charge_time: float = 1.0
 @export var pass_speed: float = 120.0
 
-@export var dive_speed: float = 120.0
+@export var dive_speed: float = 150.0
 @export_range(0.1, 1.0) var dive_duration: float = 0.32
 @export_range(0.1, 1.0) var dive_recovery: float = 0.22
 @export_range(0, 30) var dive_start_frame: int = 3

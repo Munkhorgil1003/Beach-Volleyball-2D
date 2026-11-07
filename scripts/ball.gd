@@ -15,7 +15,7 @@ const RADIUS: float = 5.0
 @export var velocity: Vector2 = Vector2(35, 0)
 @export var height_above_ground: float = 40.0
 @export var vertical_speed: float = 0.0
-@export_range(1.0, 2000.0) var gravity: float = 550.0
+@export_range(1.0, 2000.0) var gravity: float = 450.0
 @export_range(0.0, 0.95) var bounce_strength: float = 0.45
 @export_range(1.0, 1000.0) var ground_friction: float = 140.0
 @export_range(1.0, 100.0) var spike_reach: float = 44.0
@@ -53,6 +53,8 @@ var last_hitter: Node = null
 var server: Node = null
 var serve_pending: bool = false
 var is_service: bool = false
+# Set by an attacking spike so its first ground contact uses the hard bounce.
+var spiked: bool = false
 
 
 func _ready() -> void:
@@ -67,6 +69,7 @@ func prepare_serve(ground_position: Vector2, serving_side: int, serving_player: 
 	server = serving_player
 	serve_pending = false
 	is_service = false
+	spiked = false
 	position = ground_position
 	velocity = Vector2.ZERO
 	height_above_ground = 0.0
@@ -81,6 +84,7 @@ func prepare_serve(ground_position: Vector2, serving_side: int, serving_player: 
 func serve(ground_velocity: Vector2, height: float, upward_speed: float, toss_only: bool = false) -> void:
 	serve_pending = toss_only
 	is_service = not toss_only
+	spiked = false
 	if not toss_only:
 		last_hitter = server
 		contact_team = last_touch
@@ -132,6 +136,7 @@ func try_spike(hand_ground_position: Vector2, hand_height: float, facing: float,
 		# Y aims away from the player's body; ground speed stays constant on diagonals.
 		var side_angle := deg_to_rad(spike_side_angle) * clampf(contact_offset.y / spike_position_range, -1.0, 1.0)
 		velocity = Vector2(direction * cos(side_angle), sin(side_angle)) * spike_speed * power
+	spiked = not serving and not tip
 	struck.emit(0.45 if tip else (0.85 if serving else power))
 	play("spin")
 	_update_visuals()
@@ -161,6 +166,7 @@ func try_block(hand_ground_position: Vector2, hand_height: float, blocker_side: 
 		return false
 	velocity = Vector2(direction * block_return_speed, velocity.y * 0.35)
 	vertical_speed = block_upward_speed
+	spiked = false
 	struck.emit(0.7)
 	play("spin")
 	_update_visuals()
@@ -181,6 +187,7 @@ func try_receive(hand_ground_position: Vector2, hand_height: float,
 		return false
 	velocity = pass_velocity
 	vertical_speed = receive_speed(charge)
+	spiked = false
 	struck.emit(lerpf(0.4, 0.55, clampf(charge, 0.0, 1.0)))
 	play("spin")
 	_update_visuals()
@@ -293,7 +300,9 @@ func _advance_motion(delta: float) -> void:
 			if vertical_speed < 20.0:
 				vertical_speed = 0.0
 			stop()
-			play("bounce")
+			play("hard_bounce" if spiked else "bounce")
+			# Only the first impact of a spike is hard; later hops are normal.
+			spiked = false
 	else:
 		velocity = velocity.move_toward(Vector2.ZERO, ground_friction * delta)
 
@@ -304,7 +313,7 @@ func _advance_motion(delta: float) -> void:
 
 
 func _update_visuals() -> void:
-	if animation != &"bounce" or not is_playing():
+	if (animation != &"bounce" and animation != &"hard_bounce") or not is_playing():
 		if height_above_ground > 0.0 or vertical_speed > 0.0:
 			play("spin")
 		elif velocity != Vector2.ZERO:

@@ -48,24 +48,6 @@ corner_radius_top_right = 4
 corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
 
-[sub_resource type="StyleBoxFlat" id="Style_panel"]
-bg_color = Color(0.04, 0.15, 0.21, 0.98)
-corner_radius_top_left = 8
-corner_radius_top_right = 8
-corner_radius_bottom_right = 8
-corner_radius_bottom_left = 8
-
-[sub_resource type="StyleBoxFlat" id="Style_key"]
-content_margin_left = 4.0
-content_margin_top = 1.0
-content_margin_right = 4.0
-content_margin_bottom = 1.0
-bg_color = Color(0.08, 0.25, 0.31, 1)
-corner_radius_top_left = 3
-corner_radius_top_right = 3
-corner_radius_bottom_left = 3
-corner_radius_bottom_right = 3
-
 [sub_resource type="StyleBoxFlat" id="Style_key_hover"]
 content_margin_left = 4.0
 content_margin_top = 1.0
@@ -79,21 +61,39 @@ border_width_bottom = 1
 border_color = Color(1, 0.81, 0.36, 1)
 corner_radius_top_left = 3
 corner_radius_top_right = 3
-corner_radius_bottom_left = 3
 corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="Style_key"]
+content_margin_left = 4.0
+content_margin_top = 1.0
+content_margin_right = 4.0
+content_margin_bottom = 1.0
+bg_color = Color(0.08, 0.25, 0.31, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="Style_panel"]
+bg_color = Color(0.04, 0.15, 0.21, 0.98)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
 
 [sub_resource type="Theme" id="Theme_menu"]
 default_font_size = 14
-KeyButton/base_type = &"Button"
-KeyButton/styles/normal = SubResource("Style_key")
-KeyButton/styles/hover = SubResource("Style_key_hover")
-KeyButton/styles/pressed = SubResource("Style_key_hover")
-KeyButton/styles/focus = SubResource("Style_key_hover")
 Button/styles/focus = SubResource("Style_hover")
 Button/styles/hover = SubResource("Style_hover")
 Button/styles/hover_pressed = SubResource("Style_selected")
 Button/styles/normal = SubResource("Style_button")
 Button/styles/pressed = SubResource("Style_selected")
+KeyButton/base_type = &"Button"
+KeyButton/styles/focus = SubResource("Style_key_hover")
+KeyButton/styles/hover = SubResource("Style_key_hover")
+KeyButton/styles/normal = SubResource("Style_key")
+KeyButton/styles/pressed = SubResource("Style_key_hover")
 Label/colors/font_outline_color = Color(0.04, 0.15, 0.21, 1)
 Label/constants/outline_size = 3
 LineEdit/styles/focus = SubResource("Style_selected")
@@ -165,38 +165,41 @@ theme_override_font_sizes/font_size = 11
 text = "Build your team. Take the court."
 horizontal_alignment = 1
 
-[node name="Mode" type="HBoxContainer" parent="."]
+[node name="Mode" type="HBoxContainer" parent="." unique_id=418579409]
+layout_mode = 0
 offset_left = 40.0
 offset_top = 66.0
 offset_right = 360.0
 offset_bottom = 97.0
 theme_override_constants/separation = 10
 
-[node name="Label" type="Label" parent="Mode"]
+[node name="Label" type="Label" parent="Mode" unique_id=910639563]
 custom_minimum_size = Vector2(84, 0)
 layout_mode = 2
 text = "Mode"
 
-[node name="Selector" type="OptionButton" parent="Mode"]
+[node name="Selector" type="OptionButton" parent="Mode" unique_id=484883401]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="PlayerSlot" type="OptionButton" parent="."]
+[node name="PlayerSlot" type="OptionButton" parent="." unique_id=100543676]
 visible = false
+layout_mode = 0
 offset_left = 100.0
 offset_top = 102.0
 offset_right = 300.0
 offset_bottom = 126.0
 theme_override_font_sizes/font_size = 12
 
-[node name="ModeHint" type="Label" parent="."]
+[node name="ModeHint" type="Label" parent="." unique_id=420986432]
+layout_mode = 0
 offset_left = 10.0
 offset_top = 402.0
 offset_right = 390.0
 offset_bottom = 420.0
 theme_override_font_sizes/font_size = 11
-horizontal_alignment = 1
 text = "You + AI against two AI players"
+horizontal_alignment = 1
 
 [node name="TeamName" type="HBoxContainer" parent="." unique_id=1823975907]
 layout_mode = 0
@@ -288,25 +291,29 @@ custom_minimum_size = Vector2(64, 0)
 layout_mode = 2
 text = "Quit"
 
-[node name="ControlsOverlay" type="Control" parent="."]
+[node name="ControlsOverlay" type="Control" parent="." unique_id=479565710]
 visible = false
+anchors_preset = 0
 offset_right = 400.0
 offset_bottom = 430.0
 
-[node name="Dim" type="ColorRect" parent="ControlsOverlay"]
+[node name="Dim" type="ColorRect" parent="ControlsOverlay" unique_id=385147530]
+layout_mode = 0
 offset_left = -2000.0
 offset_top = -2000.0
 offset_right = 2400.0
 offset_bottom = 2430.0
 color = Color(0, 0, 0, 0.6)
 
-[node name="Panel" type="Panel" parent="ControlsOverlay"]
+[node name="Panel" type="Panel" parent="ControlsOverlay" unique_id=2085591036]
+layout_mode = 0
 offset_left = 20.0
 offset_top = 22.0
 offset_right = 380.0
 offset_bottom = 408.0
 
-[node name="Title" type="Label" parent="ControlsOverlay/Panel"]
+[node name="Title" type="Label" parent="ControlsOverlay/Panel" unique_id=2019403026]
+layout_mode = 0
 offset_left = 20.0
 offset_top = 12.0
 offset_right = 340.0
@@ -315,43 +322,47 @@ theme_override_font_sizes/font_size = 21
 text = "Controls & keys"
 horizontal_alignment = 1
 
-[node name="Player" type="OptionButton" parent="ControlsOverlay/Panel"]
+[node name="Player" type="OptionButton" parent="ControlsOverlay/Panel" unique_id=1827047717]
+layout_mode = 0
 offset_left = 80.0
 offset_top = 50.0
 offset_right = 280.0
 offset_bottom = 78.0
 theme_override_font_sizes/font_size = 13
 
-[node name="ControlsText" type="Label" parent="ControlsOverlay/Panel"]
+[node name="ControlsText" type="Label" parent="ControlsOverlay/Panel" unique_id=1908221651]
+layout_mode = 0
 offset_left = 12.0
 offset_top = 87.0
 offset_right = 348.0
 offset_bottom = 121.0
 theme_override_font_sizes/font_size = 11
-horizontal_alignment = 1
 text = "Click a binding, then press a key. Esc cancels.
 Pass also tips in air; spike also serves."
+horizontal_alignment = 1
 
-[node name="BindingRows" type="VBoxContainer" parent="ControlsOverlay/Panel"]
+[node name="BindingRows" type="VBoxContainer" parent="ControlsOverlay/Panel" unique_id=1974265474]
+layout_mode = 0
 offset_left = 20.0
 offset_top = 126.0
 offset_right = 340.0
 offset_bottom = 340.0
 theme_override_constants/separation = 1
 
-[node name="Buttons" type="HBoxContainer" parent="ControlsOverlay/Panel"]
+[node name="Buttons" type="HBoxContainer" parent="ControlsOverlay/Panel" unique_id=1707469413]
+layout_mode = 0
 offset_left = 20.0
 offset_top = 347.0
 offset_right = 340.0
 offset_bottom = 377.0
 theme_override_constants/separation = 10
 
-[node name="ResetButton" type="Button" parent="ControlsOverlay/Panel/Buttons"]
+[node name="ResetButton" type="Button" parent="ControlsOverlay/Panel/Buttons" unique_id=173762581]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Reset keys"
 
-[node name="CloseButton" type="Button" parent="ControlsOverlay/Panel/Buttons"]
+[node name="CloseButton" type="Button" parent="ControlsOverlay/Panel/Buttons" unique_id=285207458]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Back"
